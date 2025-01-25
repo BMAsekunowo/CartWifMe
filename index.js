@@ -1,18 +1,38 @@
-// alert("I am working properly");
-
-
 let cart = []; // Array to store cart items
 
 // Function to add an item to the cart
 function addToCart(name, price, image) {
-    cart.push({ name, price, image });
-    updateCartCount();
+    if (!name || !price || !image) {
+        alert("Product details are incomplete. Please try again.");
+        return;
+    }
+    
+    const existingItem = cart.find(item => item.name === name);
+    if (!existingItem) {
+        cart.push({ name, price, image });
+        updateCartCount();
+        alert(`${name} has been added to the cart!`);
+    } else {
+        alert(`${name} is already in the cart.`);
+    }
 }
 
 // Function to remove an item from the cart
 function removeFromCart(name) {
-    cart = cart.filter(item => item.name !== name);
-    updateCartCount();
+    if (!name) {
+        alert("Product name is missing. Please try again.");
+        return;
+    }
+
+    const initialLength = cart.length;
+    cart = cart.filter(item => item.name !== name); // Remove item by name
+    if (cart.length < initialLength) {
+        updateCartCount();
+        alert(`${name} has been removed from the cart.`);
+        openCartPage(); // Refresh the cart page to reflect changes
+    } else {
+        alert(`${name} is not in the cart.`);
+    }
 }
 
 // Function to update the cart count badge
@@ -28,7 +48,7 @@ function openCartPage() {
     const cartItems = document.getElementById("cart-items");
     cartItems.innerHTML = ""; // Clear previous items
 
-    // Populate cart items
+    // Populate cart items dynamically
     cart.forEach(item => {
         const li = document.createElement("li");
         li.innerHTML = `
